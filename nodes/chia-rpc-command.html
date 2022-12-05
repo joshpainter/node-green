@@ -1,0 +1,277 @@
+<style>
+    .red-ui-tray-content #dialog-form {
+    white-space:nowrap;
+}
+.full-row .red-ui-typedInput-container {
+    min-width: 70%;
+}
+.col input {
+    min-width: 100%;
+}
+.sml-lbl {
+    height: 66px;
+}
+.sml-lbl label {
+    font-size: smaller;
+    margin-bottom: 0px;
+    display: block!important;
+}
+.reg-lbl label {
+    white-space: nowrap;
+    margin-top: 5px;
+    height: 0px;
+}
+.red-ui-editor .form-row label.full-lbl {
+    white-space: normal;
+    width: 100%;
+}
+.col {
+    float: left;
+    margin-right: 5px;
+    min-height: 36px;
+}
+.col .red-ui-typedInput-container {
+    width: 100%!important;
+}
+.col-50 {
+    width: 50%;
+}
+.col-33 {
+    width: 33%;
+}
+.col-66 {
+    width: 66%;
+}
+.col-25 {
+    width: 25%;
+}
+.col-75 {
+    width: 75%;
+}
+.col-100 .red-ui-typedInput-container {
+    width: 70%!important;
+}
+.col-100.no-label .red-ui-typedInput-container {
+    width: 100%!important;
+}
+.txtarea {
+    padding-bottom: 26px;
+}
+.txtarea label {
+    vertical-align: top;
+    margin-top: 3px;
+}
+.txtarea  textarea {
+    width: 70%;
+    margin-bottom: -28px!important;
+}
+.btn-regular {
+    margin-bottom: 14px!important;
+}
+.red-ui-editableList-item-content {
+    display: inline-block;
+    margin-bottom: -6px;
+    width: -moz-available;
+    width: -webkit-fill-available;
+    width: fill-available;
+}
+.red-ui-editableList-item-content .sml-lbl {
+    height: auto;
+}
+
+</style>
+<script type="text/html" data-template-name="chia-rpc-command">
+        <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div id="node-props" style="width: 460px;">
+                <div class="form-row">
+            <div class="col-100">
+                <label for="node-input-chiaRpcConfig"><i class="fa fa-leaf"></i> Chia RPC</label>
+                <input type="text" id="node-input-chiaRpcConfig" placeholder="">
+            </div><!--col-->
+        </div><!--form-row-->
+        <div class="form-row">
+            <div class="col-100">
+                <label for="node-input-rpcService"><i class="fa fa-gears"></i> Service</label>
+                <input type="text" id="node-input-rpcService">
+            </div><!--col-->
+        </div><!--form-row-->
+        <div class="form-row">
+            <div class="col-100">
+                <label for="node-input-rpcCommand"><i class="fa fa-exclamation"></i> Command</label>
+                <input type="text" id="node-input-rpcCommand">
+            </div><!--col-->
+        </div><!--form-row-->
+        <div class="form-row">
+            <div class="col-100">
+                <label for="node-input-rpcPayload"><i class="fa fa-code"></i> Payload</label>
+                <div style="position:absolute;right:0;display:inline-block;text-align:right;font-size: 0.8em;z-index:100;">
+                    <span data-i18n="node-red:template.label.format">Syntax Highlight</span>:
+                    <select id="node-input-format_rpcPayload" style="width:110px; font-size: 10px !important;  height: 24px; padding:0;">
+                        <option value="handlebars">mustache</option>
+                        <option value="json">JSON</option>
+                    </select>
+                    <button id="node-function-expand-rpcPayload" class="red-ui-button red-ui-button-small" ><i class="fa fa-expand"></i></button>
+                </div>
+                <div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-input-rpcPayload-editor"></div>
+            </div>
+        </div><!--form-row-->
+    </div><!--node-props-->
+</script>
+
+<script type="text/html" data-help-name="chia-rpc-command">
+    
+</script>
+
+<script type="text/javascript">
+
+    RED.nodes.registerType('chia-rpc-command', {
+        category: 'chia',
+        color: '#3cac5c',
+        defaults: {
+            name: {value:""},
+                        chiaRpcConfig: {value:"", type: "chia-rpc-config"},
+            rpcService: {value:"full_node"},
+            rpcCommand: {value:"get_network_info"},
+            rpcPayload: {value:""},
+            rpcPayload_format: {value:"json"}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "font-awesome/fa-leaf",
+        label: function() {
+            return this.name || "chia-rpc-command";
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        },
+        oneditprepare: function() {
+            
+            // Prepare selectbox rpcService
+            $("#node-input-rpcService").typedInput({
+                types: [
+                    {
+                        value: "rpcService",
+                        
+                        options: [
+                            { "value":"full_node", "label": "full_node"},
+                            { "value":"wallet", "label": "wallet"},
+                            { "value":"farmer", "label": "farmer"},
+                            { "value":"data_layer", "label": "data_layer"},
+                            { "value":"harvester", "label": "harvester"},
+                            { "value":"timelord", "label": "timelord"}
+                        ]
+                    }
+                ]
+            });
+
+            // Prepare selectbox rpcCommand
+            $("#node-input-rpcCommand").typedInput({
+                types: [
+                    {
+                        value: "rpcCommand",
+                        
+                        options: [
+                            { "value":"get_network_info", "label": "get_network_info"},
+                            { "value":"get_height_info", "label": "get_height_info"},
+                            { "value":"get_wallets", "label": "get_wallets"}
+                        ]
+                    }
+                ]
+            });
+
+            // Prepare code editor rpcPayload
+            this.editor_rpcPayload = RED.editor.createEditor({
+                id: 'node-input-rpcPayload-editor',
+                mode: 'ace/mode/text',
+                value: this.rpcPayload || ""
+            });
+            $('#node-input-rpcPayload-editor').parent().css('position', 'relative');
+            $("#node-function-expand-rpcPayload").on(
+                "click", 
+                expandButtonClickHandler(
+                    this.editor_rpcPayload,
+                    'rpcPayload',
+                    '<label for="node-input-rpcPayload"><i class="fa fa-code"></i> Payload</label>'
+                )
+            );
+            RED.popover.tooltip($("#node-function-expand-rpcPayload"), RED._("node-red:common.label.expand"));
+            let editor_rpcPayload = this.editor_rpcPayload;
+            $("#node-input-format_rpcPayload").on("change", function () {
+                var mod = "ace/mode/" + $("#node-input-format_rpcPayload").val();
+                editor_rpcPayload.getSession().setMode({
+                    path: mod,
+                    v: Date.now()
+                });
+            });
+            $('#node-input-format_rpcPayload').val(this.rpcPayload_format || 'json').trigger('change');
+
+            // Allow dynamic re-size after init. appearance 
+            setTimeout(function () {
+                $('#node-props').css('width', '100%');
+            }, 30);
+        },
+        oneditresize: function() {
+            
+        
+        },
+        oneditsave: function() {
+            
+            // Save code editor rpcPayload
+            this.rpcPayload_format = $('#node-input-format_rpcPayload').val();
+            this.rpcPayload = this.editor_rpcPayload.getValue();
+            this.editor_rpcPayload.destroy();
+            delete this.editor_rpcPayload;
+
+        },
+        oneditcancel: function() {
+            
+            // Cancel code editor rpcPayload
+            this.editor_rpcPayload.destroy();
+            delete this.editor_rpcPayload;
+
+        }
+    });
+    
+    
+
+/**
+ * Expand behavior for code editor 
+ */
+function expandButtonClickHandler(editor, fieldName, fieldLabelElm) {
+    $('#node-function-expand-' + fieldName).click(function() {
+        setTimeout(function() {
+            $('ul.red-ui-tray-breadcrumbs li:nth-child(2)').html(fieldLabelElm);
+        }, 500);
+    });
+    return function (e) {
+        e.preventDefault();
+        var value = editor.getValue();
+        editor.saveView(`inside function-expandButtonClickHandler ${editor.__stateId}`);
+        RED.editor.editJavaScript(
+            {
+                value: value,
+                width: "Infinity",
+                stateId: editor.__stateId,
+                mode: "ace/mode/" + $('#node-input-format_' + fieldName).val(),
+                focus: true,
+                cancel: function () {
+                    setTimeout(function () {
+                        editor.focus();
+                    }, 250);
+                },
+                complete: function (v, cursor) {
+                    editor.setValue(v, -1);
+                    setTimeout(function () {
+                        editor.restoreView();
+                        editor.focus();
+                    }, 250);
+                }
+            }
+        );
+    }
+}
+
+</script>

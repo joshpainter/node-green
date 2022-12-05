@@ -1,0 +1,23 @@
+{
+    "name": "chia-rpc-config",
+    "version": "0.0.1",
+    "description": "A collection of custom node-red nodes for Chia",
+    "author": "Josh Painter",
+    "license": "Apache-2.0",
+    "keywords": ["chia","node-red"],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/joshpainter/chia-rpc-config.git"
+    },
+    "dependencies": {
+        "chia-daemon": "^0.7.0"
+    },
+    "node-red": {
+      "nodes": {
+        "chia-rpc-config": "nodes/chia-rpc-config.js",
+        "chia-rpc-command": "nodes/chia-rpc-command.js",
+        "chia-rpc-listener": "nodes/chia-rpc-listener.js"
+      }
+    }
+  }
+  
